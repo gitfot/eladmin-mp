@@ -34,6 +34,7 @@ service.interceptors.response.use(
     }
     return response.data
   },
+  // onRejected 方法在 onFulfilled 执行错误后执行，接收 onFulfilled 执行后的错误对象。
   error => {
     // 兼容blob下载出错json提示
     if (error.response.data instanceof Blob && error.response.data.type.toLowerCase().indexOf('json') !== -1) {
