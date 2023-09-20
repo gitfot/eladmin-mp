@@ -126,5 +126,5 @@ file:
     path: C:\wan2Ai-admin\file\
     avatar: C:\wan2Ai-admin\avatar\
   # 文件大小 /M
-  maxSize: 100
+  maxSize: 20
   avatarMaxSize: 5
