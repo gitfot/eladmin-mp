@@ -23,6 +23,11 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+  # 需要跳过鉴权的接口,以","分隔多个路径
+  security:
+    excludePath: "/test/**"
+
 #  pid:
 #    file: /自行指定位置/wan2Ai-admin.pid
 

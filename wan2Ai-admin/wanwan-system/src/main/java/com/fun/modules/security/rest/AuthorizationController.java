@@ -16,6 +16,7 @@
 package com.fun.modules.security.rest;
 
 import cn.hutool.core.util.IdUtil;
+import com.fun.response.R;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,7 +75,7 @@ public class AuthorizationController {
     @Log("用户登录")
     @ApiOperation("登录授权")
     @AnonymousPostMapping(value = "/login")
-    public ResponseEntity<Object> login(@Validated @RequestBody AuthUserDto authUser, HttpServletRequest request) throws Exception {
+    public R<?> login(@Validated @RequestBody AuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
         String password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, authUser.getPassword());
         // 查询验证码
@@ -98,8 +99,9 @@ public class AuthorizationController {
         String token = tokenProvider.createToken(authentication);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
         // 返回 token 与 用户信息
-        Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
-            put("token", properties.getTokenStartWith() + token);
+        Map<String, Object> authInfo = new HashMap<>(2) {{
+//            put("token", properties.getTokenStartWith() + token);
+            put("token", token);
             put("user", jwtUserDto);
         }};
         if (loginProperties.isSingleLogin()) {
@@ -109,7 +111,7 @@ public class AuthorizationController {
         // 保存在线信息
         onlineUserService.save(jwtUserDto, token, request);
         // 返回登录信息
-        return ResponseEntity.ok(authInfo);
+        return R.data(authInfo);
     }
 
     @ApiOperation("获取用户信息")

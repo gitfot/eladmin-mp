@@ -22,6 +22,7 @@ import com.fun.modules.security.security.*;
 import com.fun.modules.security.service.OnlineUserService;
 import com.fun.modules.security.service.UserCacheManager;
 import com.fun.utils.enums.RequestMethodEnum;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +51,9 @@ import java.util.*;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Value("${spring.security.excludePath}")
+    private String excludePattern;
 
     private final TokenProvider tokenProvider;
     private final CorsFilter corsFilter;
@@ -108,15 +112,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webSocket/**"
                 ).permitAll()
                 // swagger 文档
-                .antMatchers("/swagger-ui.html").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/*/api-docs").permitAll()
-                // 文件
-                .antMatchers("/avatar/**").permitAll()
-                .antMatchers("/file/**").permitAll()
-                // 阿里巴巴 druid
-                .antMatchers("/druid/**").permitAll()
+                .antMatchers(
+                        "/swagger-ui.html",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/*/api-docs",
+                        "/avatar/**",
+                        "/file/**",
+                        "/druid/**").permitAll()
+                .antMatchers(excludePattern.split(",")).permitAll()
                 // 放行OPTIONS请求
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 自定义匿名访问所有url放行：允许匿名和带Token访问，细腻化到每个 Request 类型
