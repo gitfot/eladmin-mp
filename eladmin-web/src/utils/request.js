@@ -29,6 +29,9 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
+    if (response.data.code === 200) {
+      return response.data.data
+    }
     return response.data
   },
   error => {
