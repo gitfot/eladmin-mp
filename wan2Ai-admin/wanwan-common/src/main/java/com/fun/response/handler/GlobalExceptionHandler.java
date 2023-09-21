@@ -13,14 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.fun.exception.handler;
+package com.fun.response.handler;
 
-import com.fun.response.R;
-import lombok.extern.slf4j.Slf4j;
 import com.fun.exception.BadRequestException;
 import com.fun.exception.EntityExistException;
 import com.fun.exception.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import com.fun.utils.ThrowableUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -41,63 +42,63 @@ public class GlobalExceptionHandler {
      * 处理所有不可知的异常
      */
     @ExceptionHandler(Throwable.class)
-    public R<?> handleException(Throwable e){
+    public ResponseEntity<?> handleException(Throwable e){
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return R.fail(e.getMessage());
-//        return buildResponseEntity(ApiError.error(e.getMessage()));
+//        return R.fail(e.getMessage());
+        return buildResponseEntity(ApiError.error(e.getMessage()));
     }
 
     /**
      * BadCredentialsException
      */
     @ExceptionHandler(BadCredentialsException.class)
-    public R<?> badCredentialsException(BadCredentialsException e){
+    public ResponseEntity<?> badCredentialsException(BadCredentialsException e){
         // 打印堆栈信息
         String message = "坏的凭证".equals(e.getMessage()) ? "用户名或密码不正确" : e.getMessage();
         log.error(message);
-        return R.fail(message);
-//        return buildResponseEntity(ApiError.error(message));
+//        return R.fail(message);
+        return buildResponseEntity(ApiError.error(message));
     }
 
     /**
      * 处理自定义异常
      */
 	@ExceptionHandler(value = BadRequestException.class)
-	public R<?> badRequestException(BadRequestException e) {
+	public ResponseEntity<?> badRequestException(BadRequestException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return R.fail(e.getMessage());
-//        return buildResponseEntity(ApiError.error(e.getStatus(),e.getMessage()));
+//        return R.fail(e.getMessage());
+        return buildResponseEntity(ApiError.error(e.getStatus(),e.getMessage()));
 	}
 
     /**
      * 处理 EntityExist
      */
     @ExceptionHandler(value = EntityExistException.class)
-    public R<?> entityExistException(EntityExistException e) {
+    public ResponseEntity<?> entityExistException(EntityExistException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return R.fail(e.getMessage());
-//        return buildResponseEntity(ApiError.error(e.getMessage()));
+//        return R.fail(e.getMessage());
+        return buildResponseEntity(ApiError.error(e.getMessage()));
     }
 
     /**
      * 处理 EntityNotFound
      */
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public R<?> entityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<?> entityNotFoundException(EntityNotFoundException e) {
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return R.fail(NOT_FOUND.value(),e.getMessage());
-//        return buildResponseEntity(ApiError.error(NOT_FOUND.value(),e.getMessage()));
+//        return R.fail(NOT_FOUND.value(),e.getMessage());
+        return buildResponseEntity(ApiError.error(NOT_FOUND.value(),e.getMessage()));
     }
 
     /**
      * 处理所有接口数据验证异常
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public R<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
         ObjectError objectError = e.getBindingResult().getAllErrors().get(0);
@@ -105,15 +106,15 @@ public class GlobalExceptionHandler {
         if (objectError instanceof FieldError) {
             message = ((FieldError) objectError).getField() + ": " + message;
         }
-        return R.fail(message);
-//        return buildResponseEntity(ApiError.error(message));
+//        return R.fail(message);
+        return buildResponseEntity(ApiError.error(message));
     }
 
     /**
      * 统一返回
      */
-    private R<?> buildResponseEntity(ApiError apiError) {
-        return R.fail(apiError.getStatus(), "系统异常！");
-//        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getStatus()));
+    private ResponseEntity<?> buildResponseEntity(ApiError apiError) {
+//        return R.fail(apiError.getStatus(), "系统异常！");
+        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getStatus()));
     }
 }

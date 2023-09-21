@@ -1,4 +1,4 @@
-package com.fun.response; /**
+package com.fun.response.R; /**
  * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
  * <p>
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
@@ -52,7 +52,7 @@ public class R<T> implements Serializable {
 	@ApiModelProperty(value = "承载数据")
 	private T data;
 	@ApiModelProperty(value = "返回消息", required = true)
-	private String msg;
+	private String message;
 
 	private R(IResultCode resultCode) {
 		this(resultCode, null, resultCode.getMessage());
@@ -70,10 +70,10 @@ public class R<T> implements Serializable {
 		this(resultCode.getCode(), data, msg);
 	}
 
-	private R(int code, T data, String msg) {
+	private R(int code, T data, String message) {
 		this.code = code;
 		this.data = data;
-		this.msg = msg;
+		this.message = message;
 		this.success = ResultCode.SUCCESS.getCode() == code;
 	}
 

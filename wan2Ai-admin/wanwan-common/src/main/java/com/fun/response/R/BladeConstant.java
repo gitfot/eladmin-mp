@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fun.response;
+package com.fun.response.R;
 
 /**
  * 系统常量

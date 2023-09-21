@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.fun.exception.handler;
+package com.fun.response.handler;
 
 import lombok.Data;
 

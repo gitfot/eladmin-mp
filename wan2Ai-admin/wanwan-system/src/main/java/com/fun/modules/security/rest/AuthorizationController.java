@@ -16,7 +16,7 @@
 package com.fun.modules.security.rest;
 
 import cn.hutool.core.util.IdUtil;
-import com.fun.response.R;
+import com.fun.response.R.R;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +26,6 @@ import com.fun.annotation.Log;
 import com.fun.annotation.rest.AnonymousGetMapping;
 import com.fun.annotation.rest.AnonymousPostMapping;
 import com.fun.config.RsaProperties;
-import com.fun.exception.BadRequestException;
 import com.fun.modules.security.config.bean.LoginCodeEnum;
 import com.fun.modules.security.config.bean.LoginProperties;
 import com.fun.modules.security.config.bean.SecurityProperties;
@@ -37,7 +36,6 @@ import com.fun.modules.security.service.OnlineUserService;
 import com.fun.utils.RsaUtils;
 import com.fun.utils.RedisUtils;
 import com.fun.utils.SecurityUtils;
-import com.fun.utils.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -75,7 +73,7 @@ public class AuthorizationController {
     @Log("用户登录")
     @ApiOperation("登录授权")
     @AnonymousPostMapping(value = "/login")
-    public R<?> login(@Validated @RequestBody AuthUserDto authUser, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> login(@Validated @RequestBody AuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
         String password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, authUser.getPassword());
         // 查询验证码 todo 暂时去除验证码
@@ -111,7 +109,7 @@ public class AuthorizationController {
         // 保存在线信息
         onlineUserService.save(jwtUserDto, token, request);
         // 返回登录信息
-        return R.data(authInfo);
+        return ResponseEntity.ok(authInfo);
     }
 
     @ApiOperation("获取用户信息")

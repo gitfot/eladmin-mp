@@ -1,4 +1,4 @@
-package com.fun.response; /**
+package com.fun.response.R; /**
  * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
  * <p>
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
