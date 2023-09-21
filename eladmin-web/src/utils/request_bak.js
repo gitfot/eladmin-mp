@@ -28,8 +28,28 @@ service.interceptors.request.use(
 
 // response 拦截器
 service.interceptors.response.use(
+
   response => {
-    return response.data
+    const res = response.data
+    if (res.code !== undefined && res.code !== 200) {
+      Notification.error({
+        title: res.message || 'Error',
+        duration: 5000
+      })
+      if (res.code === 401) {
+        store.dispatch('LogOut').then(() => {
+          // 用户登录界面提示
+          Cookies.set('point', 401)
+          location.reload()
+        })
+      } else if (res.code === 403) {
+        router.push({ path: '/401' })
+      }
+    }
+    if (res.code === 200) {
+      return res.data
+    }
+    return res
   },
   // onRejected 方法在 onFulfilled 执行错误后执行，接收 onFulfilled 执行后的错误对象。
   error => {
@@ -45,43 +65,11 @@ service.interceptors.response.use(
         })
       }
     } else {
-      let code = 0
-      try {
-        code = error.response.data.status
-      } catch (e) {
-        if (error.toString().indexOf('Error: timeout') !== -1) {
-          Notification.error({
-            title: '网络请求超时',
-            duration: 5000
-          })
-          return Promise.reject(error)
-        }
-      }
-      console.log(code)
-      if (code) {
-        if (code === 401) {
-          store.dispatch('LogOut').then(() => {
-            // 用户登录界面提示
-            Cookies.set('point', 401)
-            location.reload()
-          })
-        } else if (code === 403) {
-          router.push({ path: '/401' })
-        } else {
-          const errorMsg = error.response.data.message
-          if (errorMsg !== undefined) {
-            Notification.error({
-              title: errorMsg,
-              duration: 5000
-            })
-          }
-        }
-      } else {
-        Notification.error({
-          title: '接口请求失败',
-          duration: 5000
-        })
-      }
+      console.log('response error:', error) // for debug
+      Notification.error({
+        title: error.message,
+        duration: 5000
+      })
     }
     return Promise.reject(error)
   }
