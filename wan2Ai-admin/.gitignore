@@ -6,3 +6,4 @@
 */*.iml
 /.gradle/
 /application.pid
+env.properties

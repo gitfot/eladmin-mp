@@ -28,6 +28,7 @@
     </parent>
 
     <properties>
+        <wanwan.project.id>wan2Ai-admin</wanwan.project.id>
         <log4j2.version>2.17.0</log4j2.version>
         <logback.version>1.2.9</logback.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -185,16 +186,17 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <!-- 打包时跳过测试 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <repositories>
